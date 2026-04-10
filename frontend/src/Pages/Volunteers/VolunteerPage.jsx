@@ -6,13 +6,14 @@ import Footer from "../../Footer/Footer";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import axiosInstance from "../../utils/AxiosInstance";
 function VolunteerPage() {
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/events");
+        const res = await axiosInstance.get("/api/events");
         setEvents(res.data);
       } catch (error) {
         console.log("Error fetching events:", error);

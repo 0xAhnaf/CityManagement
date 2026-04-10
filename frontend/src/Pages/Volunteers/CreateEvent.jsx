@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./CreateEvent.css";
+import axiosInstance from "../../utils/AxiosInstance";
 function CreateEvent() {
   const [event, setEvent] = useState({
     type: "",
@@ -18,7 +19,7 @@ function CreateEvent() {
   const submitEvent = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://localhost:8000/api/events", event);
+    await axiosInstance.post("/api/events", event);
     navigate("/VolunteerPage");
   };
 

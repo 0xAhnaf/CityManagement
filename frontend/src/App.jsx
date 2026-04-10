@@ -13,6 +13,8 @@ import PrivateRoute from "./utils/PrivateRoute";
 import PublicRoute from "./utils/PublicRoute";
 import { Toaster } from "react-hot-toast";
 import CreateEvent from "./Pages/Volunteers/CreateEvent";
+import Admin from "./Pages/Admin/Admin";
+import AdminRoute from "./utils/AdminRoute";
 
 function App() {
   const location = useLocation();
@@ -30,6 +32,9 @@ function App() {
           <Route path="/VolunteerForm/:eventId" element={<VolunteerForm />} />
           <Route path="/dashboard" element={<CitizenDashboard />} />
           <Route path="/create-event" element={<CreateEvent />} />
+          <Route element={<AdminRoute/>}>
+            <Route path="/admin" element={<Admin />} />
+          </Route>
         </Route>
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />

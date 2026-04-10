@@ -4,6 +4,7 @@ import Navbar from "../../NavBar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import axiosInstance from "../../utils/AxiosInstance";
 function VolunteerForm() {
   const { eventId } = useParams();
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function VolunteerForm() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:8000/api/volunteers", {
+      await axiosInstance.post("/app/volunteers", {
         ...formData,
         eventId, // 👈 link to event
       });

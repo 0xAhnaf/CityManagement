@@ -1,6 +1,7 @@
 import { Children, createContext, useContext, useState } from "react";
 import axiosInstance from "../utils/AxiosInstance";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export const ComplaintContext = createContext();
 
@@ -15,6 +16,7 @@ export const ComplaintProvider = ({ children }) => {
     description: "",
     urgency: "",
   });
+  const navigate = useNavigate();
 
   const submitComplaint = async (submitData) => {
     try {
@@ -35,6 +37,7 @@ export const ComplaintProvider = ({ children }) => {
       );
       const { data } = response;
       toast.success(data.message);
+      navigate("/");
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data.message);
