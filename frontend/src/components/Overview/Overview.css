@@ -1,22 +1,24 @@
 .overview-wrapper {
   display: flex;
   flex-direction: column;
+  font-family: "Segoe UI", sans-serif;
+  color: #e2eaf4;
 }
 
 .overview-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   font-family: 'Syne', sans-serif;
   margin: 0 0 6px 0;
+  color: #ffffff;
 }
 
 .overview-sub {
-  font-size: 14px;
-  color: #6B7280;
+  font-size: 13px;
+  color: #7fa3c7;
   margin: 0 0 28px 0;
 }
 
-/* Stat cards */
 .overview-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -25,28 +27,34 @@
 }
 
 .stat-card {
-  background: #fff;
-  border: 1px solid #E5E7EB;
+  background: rgba(10, 20, 40, 0.7);
+  border: 1px solid #1a3a5c;
   border-radius: 12px;
   padding: 1.2rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: border-color 0.15s;
+}
+
+.stat-card:hover {
+  border-color: #254d73;
 }
 
 .stat-label {
-  font-size: 13px;
-  color: #6B7280;
+  font-size: 11px;
+  color: #4a7aa0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: #111827;
+  color: #19d3c5;
   font-family: 'Syne', sans-serif;
 }
 
-/* Panels */
 .overview-panels {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -54,17 +62,19 @@
 }
 
 .overview-panel {
-  background: #fff;
-  border: 1px solid #E5E7EB;
+  background: rgba(10, 20, 40, 0.7);
+  border: 1px solid #1a3a5c;
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
 }
 
 .panel-heading {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   margin-bottom: 16px;
-  color: #111827;
+  color: #4a7aa0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .panel-row {
@@ -72,7 +82,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid #F3F4F6;
+  border-bottom: 1px solid rgba(26, 58, 92, 0.5);
+  transition: background 0.1s;
 }
 
 .panel-row:last-child {
@@ -88,17 +99,17 @@
 .panel-row-title {
   font-size: 13px;
   font-weight: 500;
-  color: #111827;
+  color: #c8ddf0;
 }
 
 .panel-row-sub {
   font-size: 11px;
-  color: #9CA3AF;
+  color: #4a7aa0;
 }
 
 .panel-empty {
   font-size: 13px;
-  color: #9CA3AF;
+  color: #4a7aa0;
 }
 
 .badge {

@@ -1,24 +1,27 @@
 .complaints-wrapper {
   display: flex;
   flex-direction: column;
+  font-family: "Segoe UI", sans-serif;
+  color: #e2eaf4;
 }
 
 .complaints-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   font-family: 'Syne', sans-serif;
   margin: 0 0 6px 0;
+  color: #ffffff;
 }
 
 .complaints-sub {
-  font-size: 14px;
-  color: #6B7280;
+  font-size: 13px;
+  color: #7fa3c7;
   margin: 0 0 24px 0;
 }
 
 .complaints-table-wrapper {
-  background: #fff;
-  border: 1px solid #E5E7EB;
+  background: rgba(10, 20, 40, 0.7);
+  border: 1px solid #1a3a5c;
   border-radius: 12px;
   overflow: auto;
 }
@@ -31,25 +34,27 @@
 }
 
 .complaints-thead-row {
-  background: #F9FAFB;
-  border-bottom: 1px solid #E5E7EB;
+  background: rgba(15, 30, 55, 0.8);
+  border-bottom: 1px solid #1a3a5c;
 }
 
 .complaints-th {
-  padding: 10px 14px;
+  padding: 10px 16px;
   text-align: left;
   font-weight: 500;
-  font-size: 12px;
-  color: #6B7280;
+  font-size: 11px;
+  color: #4a7aa0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .complaints-row {
-  border-bottom: 1px solid #F3F4F6;
+  border-bottom: 1px solid rgba(26, 58, 92, 0.5);
   transition: background 0.1s;
 }
 
 .complaints-row:hover {
-  background: #F9FAFB;
+  background: rgba(25, 211, 197, 0.04);
 }
 
 .complaints-row:last-child {
@@ -57,20 +62,20 @@
 }
 
 .complaints-td {
-  padding: 12px 14px;
+  padding: 12px 16px;
 }
 
 .td-title {
   font-weight: 500;
-  color: #111827;
+  color: #e2eaf4;
 }
 
 .td-muted {
-  color: #6B7280;
+  color: #7fa3c7;
 }
 
 .td-faint {
-  color: #9CA3AF;
+  color: #4a7aa0;
 }
 
 .complaints-badge {
@@ -86,13 +91,20 @@
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
-  border: 1px solid #E5E7EB;
-  background: #fff;
+  border: 1px solid #1a3a5c;
+  background: rgba(7, 20, 39, 0.8);
   cursor: pointer;
-  color: #111827;
+  color: #c8ddf0;
+  font-family: "Segoe UI", sans-serif;
   outline: none;
+  transition: border-color 0.15s;
 }
 
 .complaints-select:hover {
-  border-color: #D1D5DB;
+  border-color: #254d73;
+}
+
+.complaints-select:focus {
+  border-color: #19d3c5;
+  box-shadow: 0 0 0 3px rgba(25, 211, 197, 0.1);
 }
