@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         });
         const { data } = response;
         setUser(data);
-        navigate("/");
+        navigate(data.role === "admin" ? "/admin" : "/");
         toast.success("Login successful");
     } catch (error) {
         toast.error(error.response.data.message);
