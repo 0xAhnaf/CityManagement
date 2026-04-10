@@ -1,24 +1,48 @@
 import Volunteer from "../Models/volunteerModel.js";
 
+// ENROLL
 export const createVolunteer = async (req, res) => {
   try {
-    const newVolunteer = new Volunteer(req.body);
-    const saveData = await newVolunteer.save();
+    const userId = req.user.id;
+    const { eventId } = req.body;
 
-    res.status(201).json(saveData);
+    const exists = await Volunteer.findOne({ userId, eventId });
+
+    if (exists) {
+      return res.status(400).json({ message: "Already enrolled" });
+    }
+
+    const newVolunteer = new Volunteer({
+      userId,
+      eventId,
+    });
+
+    const saved = await newVolunteer.save();
+    res.status(201).json(saved);
   } catch (error) {
-    console.log("ERROR:", error);
     res.status(500).json({ errorMessage: error.message });
   }
 };
 
-export const getVolunteersByEvent = async (req, res) => {
+// CHECK IF ENROLLED
+export const checkVolunteer = async (req, res) => {
   try {
+    const userId = req.user.id;
     const eventId = req.params.eventId;
 
-    const data = await Volunteer.find({ eventId });
+    const exists = await Volunteer.findOne({ userId, eventId });
 
-    res.status(200).json(data);
+    res.json({ enrolled: !!exists });
+  } catch (error) {
+    res.status(500).json({ errorMessage: error.message });
+  }
+};
+
+// (optional admin)
+export const getVolunteersByEvent = async (req, res) => {
+  try {
+    const data = await Volunteer.find({ eventId: req.params.eventId });
+    res.json(data);
   } catch (error) {
     res.status(500).json({ errorMessage: error.message });
   }

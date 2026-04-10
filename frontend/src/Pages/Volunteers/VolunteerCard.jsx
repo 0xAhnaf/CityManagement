@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTree,
@@ -7,7 +7,8 @@ import {
   faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
 import "./VolunteerCard.css";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 function VolunteerCard({ vcard }) {
   const iconMap = {
     Environmental: faTree,
@@ -15,22 +16,56 @@ function VolunteerCard({ vcard }) {
     Community: faHouseFlag,
     Educational: faGraduationCap,
   };
-  const navigate = useNavigate();
+
+  const [enrolled, setEnrolled] = useState(false);
+
+  // check if already enrolled when page loads
+  useEffect(() => {
+    checkEnrollment();
+  }, []);
+
+  const checkEnrollment = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/app/volunteers/check/${vcard._id}`,
+        { withCredentials: true },
+      );
+
+      setEnrolled(res.data.enrolled);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleEnroll = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8000/app/volunteers",
+        { eventId: vcard._id },
+        { withCredentials: true },
+      );
+
+      setEnrolled(true);
+    } catch (err) {
+      console.log(err.response?.data?.message);
+    }
+  };
+
   return (
     <div className="Vol-card">
       <div className="icon-box">
         <FontAwesomeIcon icon={iconMap[vcard.type]} />
       </div>
+
       <h2>{vcard.type}</h2>
       <p>{vcard.description}</p>
+
       <p>
         <h4>Location</h4> {vcard.location}
       </p>
-      <button
-        className="vol-btn"
-        onClick={() => navigate(`/VolunteerForm/${vcard._id}`)}
-      >
-        Enroll me
+
+      <button className="vol-btn" onClick={handleEnroll} disabled={enrolled}>
+        {enrolled ? "Enrolled" : "Enroll me"}
       </button>
     </div>
   );

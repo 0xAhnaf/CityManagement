@@ -6,26 +6,18 @@ const volunteerSchema = new mongoose.Schema({
     ref: "Events",
     required: true,
   },
-
-  name: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
     required: true,
   },
-
-  email: {
-    type: String,
-    required: true,
-  },
-
-  phone: {
-    type: String,
-    required: true,
-  },
-
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
+
+// optional safety: prevent duplicate enroll
+volunteerSchema.index({ userId: 1, eventId: 1 }, { unique: true });
 
 export default mongoose.model("Volunteers", volunteerSchema);
