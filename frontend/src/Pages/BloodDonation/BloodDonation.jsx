@@ -61,7 +61,7 @@ function BloodDonation() {
       setMyProfile(data);
       setAvailability(data.available ?? true);
     } catch (err) {
-      // not registered yet, that's fine
+      
       setMyProfile(null);
     }
   };
@@ -149,7 +149,7 @@ function BloodDonation() {
                 <div className="donorStatusRow">
                   <span className="registeredBadge">✓ Registered as donor</span>
                   <button className={`availabilityBtn ${availability ? "unavailable" : "available"}`} onClick={toggleAvailability}>
-                    {availability ? "✗ Unavailable" : "✓ Available"}
+                    {availability ? " Unavailable" : " Available "}
                   </button>
                 </div>
               ) : (
