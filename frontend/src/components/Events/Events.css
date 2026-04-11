@@ -1,9 +1,10 @@
 .events-wrapper {
   display: flex;
   flex-direction: column;
+  font-family: "Segoe UI", sans-serif;
+  color: #e2eaf4;
 }
 
-/* Header */
 .events-header {
   display: flex;
   justify-content: space-between;
@@ -12,37 +13,43 @@
 }
 
 .events-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   font-family: "Syne", sans-serif;
   margin: 0 0 4px 0;
+  color: #ffffff;
 }
 
 .events-sub {
-  font-size: 14px;
-  color: #6b7280;
+  font-size: 13px;
+  color: #7fa3c7;
   margin: 0;
 }
 
 .events-add-btn {
-  padding: 9px 20px;
+  padding: 8px 18px;
   border-radius: 8px;
-  border: none;
-  background: #111827;
-  color: #fff;
+  border: 1px solid #19d3c5;
+  background: rgba(25, 211, 197, 0.1);
+  color: #19d3c5;
   font-size: 13px;
   font-weight: 500;
+  font-family: "Segoe UI", sans-serif;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s;
+  transition: all 0.15s;
+}
+
+.events-add-btn:hover {
+  background: rgba(25, 211, 197, 0.18);
 }
 
 .events-add-btn.cancel {
   background: #6b7280;
 }
 
-.events-add-btn:hover {
-  opacity: 0.9;
+.events-add-btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 /* Form Container */
@@ -59,7 +66,7 @@
   font-size: 15px;
   font-weight: 500;
   margin-bottom: 18px;
-  color: #111827;
+  color: #c8ddf0;
 }
 
 /* Grid */
@@ -80,6 +87,8 @@
   color: #6b7280;
   display: block;
   margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* Input + Select */
@@ -150,14 +159,13 @@
   font-weight: 500;
 
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background 0.15s;
 }
 
 .eventsButtonForm:hover {
   opacity: 0.9;
 }
 
-/* Event list */
 .events-list {
   display: flex;
   flex-direction: column;
@@ -167,19 +175,23 @@
 .events-empty {
   text-align: center;
   padding: 3rem;
-  color: #9ca3af;
-  background: #fff;
+  color: #4a7aa0;
+  background: rgba(10, 20, 40, 0.5);
   border-radius: 12px;
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed #1a3a5c;
   font-size: 13px;
 }
 
-/* Event card */
 .event-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: rgba(10, 20, 40, 0.7);
+  border: 1px solid #1a3a5c;
   border-radius: 12px;
   overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.event-card:hover {
+  border-color: #254d73;
 }
 
 .event-card-header {
@@ -205,22 +217,23 @@
 .event-card-title {
   font-size: 15px;
   font-weight: 600;
-  color: #111827;
+  color: #e2eaf4;
 }
 
 .event-vol-badge {
-  background: #e0f2fe;
-  color: #0369a1;
+  background: rgba(25, 211, 197, 0.1);
+  color: #19d3c5;
   font-size: 11px;
   padding: 2px 10px;
   border-radius: 20px;
   font-weight: 500;
+  border: 1px solid rgba(25, 211, 197, 0.25);
   white-space: nowrap;
 }
 
 .event-card-desc {
   font-size: 13px;
-  color: #6b7280;
+  color: #7fa3c7;
   margin: 0 0 8px 0;
 }
 
@@ -228,7 +241,7 @@
   display: flex;
   gap: 16px;
   font-size: 12px;
-  color: #9ca3af;
+  color: #4a7aa0;
   flex-wrap: wrap;
 }
 
@@ -242,61 +255,63 @@
 .event-vol-btn {
   padding: 6px 14px;
   border-radius: 7px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
+  border: 1px solid #1a3a5c;
+  background: transparent;
   cursor: pointer;
   font-size: 12px;
-  color: #374151;
-  transition: background 0.1s;
+  font-family: "Segoe UI", sans-serif;
+  color: #7fa3c7;
+  transition: all 0.1s;
 }
 
+.event-vol-btn:hover,
 .event-vol-btn.active {
-  background: #f3f4f6;
-}
-
-.event-vol-btn:hover {
-  background: #f3f4f6;
+  border-color: #19d3c5;
+  color: #19d3c5;
+  background: rgba(25, 211, 197, 0.06);
 }
 
 .event-delete-btn {
   padding: 6px 14px;
   border-radius: 7px;
-  border: 1px solid #fca5a5;
-  background: #fef2f2;
+  border: 1px solid rgba(241, 118, 11, 0.35);
+  background: rgba(241, 118, 11, 0.08);
   cursor: pointer;
   font-size: 12px;
-  color: #dc2626;
+  font-family: "Segoe UI", sans-serif;
+  color: #f1760b;
   transition: opacity 0.1s;
 }
 
 .event-delete-btn:hover {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
-/* Volunteers panel */
 .event-vol-panel {
-  border-top: 1px solid #f3f4f6;
-  background: #f9fafb;
+  border-top: 1px solid #1a3a5c;
+  background: rgba(7, 14, 30, 0.6);
   padding: 1rem 1.5rem;
 }
 
 .event-vol-heading {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: #6b7280;
+  color: #4a7aa0;
   margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .event-vol-empty {
   font-size: 13px;
-  color: #9ca3af;
+  color: #4a7aa0;
   padding: 0.5rem 0;
   margin: 0;
 }
 
 .event-vol-table-wrapper {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: rgba(10, 20, 40, 0.6);
+  border: 1px solid #1a3a5c;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -308,20 +323,27 @@
 }
 
 .event-vol-thead-row {
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background: rgba(15, 30, 55, 0.8);
+  border-bottom: 1px solid #1a3a5c;
 }
 
 .event-vol-th {
   padding: 8px 14px;
   text-align: left;
-  font-size: 12px;
-  color: #9ca3af;
+  font-size: 11px;
+  color: #4a7aa0;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .event-vol-row {
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid rgba(26, 58, 92, 0.5);
+  transition: background 0.1s;
+}
+
+.event-vol-row:hover {
+  background: rgba(25, 211, 197, 0.03);
 }
 
 .event-vol-row:last-child {
@@ -334,18 +356,23 @@
 
 .vol-name {
   font-weight: 500;
-  color: #111827;
+  color: #e2eaf4;
 }
 
 .vol-status-select {
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
+  border: 1px solid #1a3a5c;
+  background: rgba(7, 20, 39, 0.8);
   cursor: pointer;
-  color: #111827;
+  color: #c8ddf0;
+  font-family: "Segoe UI", sans-serif;
   outline: none;
+}
+
+.vol-status-select:focus {
+  border-color: #19d3c5;
 }
 
 .vol-action-btns {
@@ -356,38 +383,39 @@
 .vol-contact-btn {
   padding: 5px 12px;
   border-radius: 6px;
-  border: 1px solid #bfdbfe;
-  background: #eff6ff;
-  color: #1d4ed8;
+  border: 1px solid rgba(25, 211, 197, 0.3);
+  background: rgba(25, 211, 197, 0.08);
+  color: #19d3c5;
   font-size: 12px;
+  font-family: "Segoe UI", sans-serif;
   cursor: pointer;
   transition: opacity 0.1s;
 }
 
 .vol-contact-btn:hover {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .vol-remove-btn {
   padding: 5px 12px;
   border-radius: 6px;
-  border: 1px solid #fca5a5;
-  background: #fef2f2;
-  color: #dc2626;
+  border: 1px solid rgba(241, 118, 11, 0.3);
+  background: rgba(241, 118, 11, 0.08);
+  color: #f1760b;
   font-size: 12px;
+  font-family: "Segoe UI", sans-serif;
   cursor: pointer;
   transition: opacity 0.1s;
 }
 
 .vol-remove-btn:hover {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
-/* Modals */
 .events-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -395,7 +423,8 @@
 }
 
 .events-modal {
-  background: #fff;
+  background: #0a1828;
+  border: 1px solid #1a3a5c;
   border-radius: 14px;
   padding: 1.75rem 2rem;
   min-width: 300px;
@@ -408,12 +437,12 @@
   font-size: 16px;
   font-family: "Syne", sans-serif;
   margin-bottom: 18px;
-  color: #111827;
+  color: #ffffff;
 }
 
 .modal-desc {
   font-size: 13px;
-  color: #6b7280;
+  color: #7fa3c7;
   margin: 0 0 24px 0;
 }
 
@@ -425,14 +454,16 @@
 }
 
 .modal-field-label {
-  font-size: 12px;
-  color: #6b7280;
+  font-size: 11px;
+  color: #4a7aa0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .modal-field-value {
   font-size: 14px;
   font-weight: 500;
-  color: #111827;
+  color: #e2eaf4;
 }
 
 .modal-actions {
@@ -444,11 +475,17 @@
   flex: 1;
   padding: 9px 0;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
+  border: 1px solid #1a3a5c;
+  background: transparent;
   cursor: pointer;
   font-size: 13px;
-  color: #374151;
+  font-family: "Segoe UI", sans-serif;
+  color: #7fa3c7;
+  transition: background 0.15s;
+}
+
+.modal-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .modal-delete-btn {
@@ -456,23 +493,36 @@
   padding: 9px 0;
   border-radius: 8px;
   border: none;
-  background: #ef4444;
-  color: #fff;
+  background: rgba(241, 118, 11, 0.15);
+  border: 1px solid rgba(241, 118, 11, 0.4);
+  color: #f1760b;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
+  font-family: "Segoe UI", sans-serif;
+  transition: background 0.15s;
+}
+
+.modal-delete-btn:hover {
+  background: rgba(241, 118, 11, 0.25);
 }
 
 .modal-close-btn {
   width: 100%;
   padding: 9px 0;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
+  border: 1px solid #1a3a5c;
+  background: transparent;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  font-family: "Segoe UI", sans-serif;
+  color: #7fa3c7;
+  transition: background 0.15s;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .events-badge {
