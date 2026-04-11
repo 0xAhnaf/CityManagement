@@ -99,3 +99,22 @@
   overflow-y: auto;
   min-width: 0;
 }
+
+.admin-logout-btn {
+  width: 100%;
+  padding: 8px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: #7fa3c7;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.admin-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: #f87171;
+}

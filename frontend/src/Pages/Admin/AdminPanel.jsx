@@ -4,6 +4,8 @@ import Overview from "../../components/Overview/Overview";
 import Complaints from "../../components/Complaints/Complaints";
 import Donors from "../../components/Donors/Donors";
 import Events from "../../components/Events/Events";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 const navItems = [
   { key: "dashboard", label: "Overview" },
@@ -14,6 +16,13 @@ const navItems = [
 
 export default function AdminPanel() {
   const [tab, setTab] = useState("dashboard");
+  const { logout } = useAuthContext();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="admin-wrapper">
@@ -40,6 +49,9 @@ export default function AdminPanel() {
         <div className="admin-sidebar-footer">
           <span className="admin-footer-label">Logged in as</span>
           <span className="admin-footer-name">Admin</span>
+          <button className="admin-logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </aside>
 
