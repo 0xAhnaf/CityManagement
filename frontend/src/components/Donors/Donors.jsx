@@ -4,8 +4,8 @@ import api from "../../utils/AxiosInstance";
 import toast from "react-hot-toast";
 
 export default function Donors() {
-  const [donors, setDonors]       = useState([]);
-  const [loading, setLoading]     = useState(true);
+  const [donors, setDonors]           = useState([]);
+  const [loading, setLoading]         = useState(true);
   const [filterBlood, setFilterBlood] = useState("all");
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function Donors() {
         <table className="donors-table">
           <thead>
             <tr className="donors-thead-row">
-              {["Name", "Blood group", "Phone", "District", "Age", "Last donated", "Registered on"].map(h => (
+              {["Name", "Blood group", "Phone", "District", "Age", "Last donated", "Availability", "Registered on"].map(h => (
                 <th key={h} className="donors-th">{h}</th>
               ))}
             </tr>
@@ -58,7 +58,7 @@ export default function Donors() {
           <tbody>
             {filteredDonors.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ textAlign: "center", padding: "24px" }}>
+                <td colSpan={8} style={{ textAlign: "center", padding: "24px" }}>
                   No donors found.
                 </td>
               </tr>
@@ -76,6 +76,11 @@ export default function Donors() {
                     {d.lastDonated
                       ? new Date(d.lastDonated).toLocaleDateString()
                       : "—"}
+                  </td>
+                  <td className="donors-td">
+                     <span className={`availability-badge ${d.available !== false ? "available" : "unavailable"}`}>
+                        {d.available !== false ? "Available" : "Unavailable"}
+                     </span>
                   </td>
                   <td className="donors-td td-faint">
                     {new Date(d.createdAt).toLocaleDateString()}

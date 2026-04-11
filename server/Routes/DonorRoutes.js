@@ -5,10 +5,11 @@ import {
   getDonors,
   getBloodGroupCounts,
   getMyDonorProfile,
+  updateAvailability,
 } from "../Controllers/DonorController.js";
-
 const router = express.Router();
 
+router.patch("/me/availability", checkToken, updateAvailability);
 router.get("/",        checkToken, getDonors);
 router.post("/",       checkToken, registerDonor);
 router.get("/counts",  checkToken, getBloodGroupCounts);

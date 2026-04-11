@@ -28,11 +28,12 @@ export const registerDonor = async (req, res) => {
 
 export const getDonors = async (req, res) => {
   try {
-    const { bloodGroup, district } = req.query;
+    const { bloodGroup, district, available } = req.query;
 
     const filter = {};
     if (bloodGroup && bloodGroup !== "Any blood group") filter.bloodGroup = bloodGroup;
     if (district   && district   !== "Any district")    filter.district   = district;
+    if (available  !== undefined)                       filter.available  = available === "true";
 
     const donors = await Donor.find(filter).select("-user -__v");
     return res.status(200).json(donors);
@@ -64,5 +65,18 @@ export const getMyDonorProfile = async (req, res) => {
     return res.status(200).json(donor);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateAvailability = async (req, res) => {
+  try {
+    const donor = await Donor.findOneAndUpdate(
+      { user: req.user.id },
+      { available: req.body.available },
+      { new: true }
+    );
+    res.json(donor);
+  } catch (err) {
+    res.status(500).json({ errorMessage: err.message });
   }
 };

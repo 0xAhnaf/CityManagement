@@ -364,7 +364,7 @@
   padding: 24px;
   border-radius: 14px;
   width: 100%;
-  max-width: 480px;
+  max-width: 580px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -416,6 +416,58 @@
 
 .submitBtn:hover {
   background: #990000;
+}
+
+.donorStatusRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.registeredBadge {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid #10B981;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.availabilityBtn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.availabilityBtn.available {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10B981;
+  border: 1px solid #10B981;
+
+
+}
+
+.availabilityBtn.available:hover {
+  background: #10B981;
+  color: white;
+
+}
+
+.availabilityBtn.unavailable {
+  background: rgba(239, 68, 68, 0.2);
+  color: #EF4444;
+  border: 1px solid #EF4444;
+}
+
+.availabilityBtn.unavailable:hover {
+  background: #EF4444;
+  color: white;
 }
 
 /* Responsive */
