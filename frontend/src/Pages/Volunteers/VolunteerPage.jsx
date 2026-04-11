@@ -39,11 +39,6 @@ function VolunteerPage() {
             <VolunteerCard vcard={event} key={event._id} />
           ))}
         </div>
-        <div className="create-event-btn">
-          <button onClick={() => navigate("/create-event")}>
-            + Create Event
-          </button>
-        </div>
       </div>
       <Footer />
     </div>

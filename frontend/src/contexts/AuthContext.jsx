@@ -6,11 +6,11 @@ import toast from "react-hot-toast";
 export const AuthContext = createContext();
 
 export const useAuthContext = () => {
-    return useContext(AuthContext);
-}
+  return useContext(AuthContext);
+};
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
@@ -37,31 +37,34 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (name, email, password) => {
     try {
-        const response = await axiosInstance.post("/auth/signup", {
-            name, email, password
-        });
-        const { data } = response;
-        setUser(data);
-        navigate("/");
-        toast.success("Signup successful");
+      const response = await axiosInstance.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
+      const { data } = response;
+      setUser(data);
+      navigate("/");
+      toast.success("Signup successful");
     } catch (error) {
-        toast.error(error.response.data.message);
+      toast.error(error.response.data.message);
     }
-  }
+  };
 
   const login = async (email, password) => {
     try {
-        const response = await axiosInstance.post("/auth/login", {
-            email, password
-        });
-        const { data } = response;
-        setUser(data);
-        navigate("/");
-        toast.success("Login successful");
+      const response = await axiosInstance.post("/auth/login", {
+        email,
+        password,
+      });
+      const { data } = response;
+      setUser(data);
+      navigate(data.role === "admin" ? "/admin" : "/");
+      toast.success("Login successful");
     } catch (error) {
-        toast.error(error.response.data.message);
+      toast.error(error.response.data.message);
     }
-  }
+  };
 
   const logout = async () => {
     setUser(null);
@@ -87,4 +90,4 @@ export const AuthProvider = ({ children }) => {
       {loading ? null : children}
     </AuthContext.Provider>
   );
-}
+};

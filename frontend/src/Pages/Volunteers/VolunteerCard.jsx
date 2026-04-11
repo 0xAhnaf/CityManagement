@@ -63,8 +63,19 @@ function VolunteerCard({ vcard }) {
       <p>
         <h4>Location</h4> {vcard.location}
       </p>
+      <p>
+        <h4>Date</h4>
+        {vcard.date}
+      </p>
+      <p>
+        <h4>Time</h4> {vcard.time}
+      </p>
 
-      <button className="vol-btn" onClick={handleEnroll} disabled={enrolled}>
+      <button
+        className={`vol-btn ${enrolled ? "enrolled" : ""}`}
+        onClick={handleEnroll}
+        disabled={enrolled}
+      >
         {enrolled ? "Enrolled" : "Enroll me"}
       </button>
     </div>
