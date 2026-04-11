@@ -6,11 +6,15 @@ const evidenceSchema = new Schema(
 );
 
 const complaintSchema = new mongoose.Schema({
+  title: String,
   category: String,
   location: String,
   evidence: [evidenceSchema],
   description: String,
   urgency: String,
+  user: String,
+  status: String,
+  date: Date,
   userID: {
     type: Schema.Types.ObjectId,
     ref: "User",   // 👈 important

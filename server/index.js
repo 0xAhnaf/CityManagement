@@ -3,9 +3,9 @@ import express from "express";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import AuthRouter from "./Routes/AuthRouter.js"
-import UserRouter from "./Routes/UserRouter.js"
-import ComplaintRouter from "./Routes/ComplaintRouter.js"
+import AuthRouter from "./Routes/AuthRouter.js";
+import UserRouter from "./Routes/UserRouter.js";
+import ComplaintRouter from "./Routes/ComplaintRouter.js";
 import DonorRouter from "./Routes/DonorRoutes.js";
 import eventRoute from "./Routes/eventRoute.js";
 import volunteerRoute from "./Routes/volunteerRoute.js";
@@ -27,7 +27,7 @@ mongoose
   .then(() => console.log("Connected to database"))
   .catch((err) => console.log(`Error connecting to database ${err}`));
 
-const dir = "uploads"
+const dir = "uploads";
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
@@ -44,10 +44,10 @@ app.use(
 );
 app.use(log);
 
-app.use('/auth', AuthRouter);
-app.use('/user', UserRouter);
-app.use('/complaint', ComplaintRouter);
-app.use('/donors', DonorRouter);
+app.use("/auth", AuthRouter);
+app.use("/user", UserRouter);
+app.use("/complaint", ComplaintRouter);
+app.use("/donors", DonorRouter);
 app.use("/api", eventRoute);
 app.use("/app", volunteerRoute);
 

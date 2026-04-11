@@ -1,27 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Donors.css";
-
-const mockDonors = [
-  { _id: "1", name: "Jahangir Alam", bloodGroup: "A+", phone: "01811111111", area: "Kishorganj Sadar", lastDonated: "2024-01-10", available: true },
-  { _id: "2", name: "Roksana Begum", bloodGroup: "B+", phone: "01822222222", area: "Nikli", lastDonated: "2023-11-05", available: true },
-  { _id: "3", name: "Tariq Ahmed", bloodGroup: "O+", phone: "01833333333", area: "Austagram", lastDonated: "2024-02-20", available: false },
-  { _id: "4", name: "Sharmin Sultana", bloodGroup: "AB-", phone: "01844444444", area: "Mithamain", lastDonated: "2024-03-01", available: true },
-  { _id: "5", name: "Kabir Hossain", bloodGroup: "O-", phone: "01855555555", area: "Bajitpur", lastDonated: "2023-12-15", available: true },
-];
+import api from "../../utils/AxiosInstance";
+import toast from "react-hot-toast";
 
 export default function Donors() {
-  const [donors] = useState(mockDonors);
+  const [donors, setDonors]       = useState([]);
+  const [loading, setLoading]     = useState(true);
   const [filterBlood, setFilterBlood] = useState("all");
 
+  useEffect(() => {
+    const fetchDonors = async () => {
+      try {
+        const { data } = await api.get("/donors");
+        setDonors(data);
+      } catch (err) {
+        toast.error("Failed to load donors.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDonors();
+  }, []);
+
   const bloodGroups = ["all", ...new Set(donors.map(d => d.bloodGroup))];
-  const filteredDonors = filterBlood === "all" ? donors : donors.filter(d => d.bloodGroup === filterBlood);
+  const filteredDonors = filterBlood === "all"
+    ? donors
+    : donors.filter(d => d.bloodGroup === filterBlood);
+
+  if (loading) return <p>Loading donors...</p>;
 
   return (
     <div className="donors-wrapper">
       <h1 className="donors-title">Blood donors</h1>
       <p className="donors-sub">Filter and manage blood donor registry</p>
 
-      {/* Blood group filter */}
       <div className="donors-filters">
         {bloodGroups.map(bg => (
           <button
@@ -34,36 +46,43 @@ export default function Donors() {
         ))}
       </div>
 
-      {/* Table */}
       <div className="donors-table-wrapper">
         <table className="donors-table">
           <thead>
             <tr className="donors-thead-row">
-              {["Name", "Blood group", "Phone", "Area", "Last donated", "Available"].map(h => (
+              {["Name", "Blood group", "Phone", "District", "Age", "Last donated", "Registered on"].map(h => (
                 <th key={h} className="donors-th">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {filteredDonors.map(d => (
-              <tr key={d._id} className="donors-row">
-                <td className="donors-td td-title">{d.name}</td>
-                <td className="donors-td">
-                  <span className="blood-badge">{d.bloodGroup}</span>
-                </td>
-                <td className="donors-td td-muted">{d.phone}</td>
-                <td className="donors-td td-muted">{d.area}</td>
-                <td className="donors-td td-faint">{d.lastDonated}</td>
-                <td className="donors-td">
-                  <div className="donors-available">
-                    <span className={`donors-dot ${d.available ? "dot-green" : "dot-red"}`} />
-                    <span className={d.available ? "text-green" : "text-red"}>
-                      {d.available ? "Yes" : "No"}
-                    </span>
-                  </div>
+            {filteredDonors.length === 0 ? (
+              <tr>
+                <td colSpan={7} style={{ textAlign: "center", padding: "24px" }}>
+                  No donors found.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredDonors.map(d => (
+                <tr key={d._id} className="donors-row">
+                  <td className="donors-td td-title">{d.name}</td>
+                  <td className="donors-td">
+                    <span className="blood-badge">{d.bloodGroup}</span>
+                  </td>
+                  <td className="donors-td td-muted">{d.phone}</td>
+                  <td className="donors-td td-muted">{d.district}</td>
+                  <td className="donors-td td-muted">{d.age}</td>
+                  <td className="donors-td td-faint">
+                    {d.lastDonated
+                      ? new Date(d.lastDonated).toLocaleDateString()
+                      : "—"}
+                  </td>
+                  <td className="donors-td td-faint">
+                    {new Date(d.createdAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

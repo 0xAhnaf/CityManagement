@@ -4,15 +4,20 @@ import UrgencySelector from "../components/UrgencySelector/UrgencySelector";
 import ContactForm from "../components/ContactForm/ContactForm";
 import "./Step4Final.css";
 import { useComplaintContext } from "../contexts/ComplaintContext";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 const Step4Final = ({ prevStep }) => {
   const [urgency, setUrgency] = useState("Urgent");
   const { complaint, setComplaint, submitComplaint } = useComplaintContext();
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const handleChange = (e) => {
-    const { value } = e.target;
-    setDescription(value);
+    const { name, value } = e.target;
+    if (name === "description") {
+      setDescription(value);
+    } else if (name === "title") {
+      setTitle(value);
+    }
   };
   const navigate = useNavigate();
 
@@ -23,6 +28,7 @@ const Step4Final = ({ prevStep }) => {
       ...complaint,
       description,
       urgency,
+      title,
     };
 
     setComplaint(updatedComplaint);
@@ -48,6 +54,15 @@ const Step4Final = ({ prevStep }) => {
         <p className="subtitle">
           Provide final information before submitting the complaint.
         </p>
+
+        <div className="section">
+          <label>Title</label>
+          <input
+            name="title"
+            onChange={handleChange}
+            placeholder="Title of your problem"
+          />
+        </div>
 
         <div className="section">
           <label>Detailed Description</label>

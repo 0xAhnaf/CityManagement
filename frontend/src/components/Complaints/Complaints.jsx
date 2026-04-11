@@ -1,5 +1,7 @@
 import { useState } from "react";
 import "./Complaints.css";
+import axiosInstance from "../../utils/AxiosInstance";
+import { useEffect } from "react";
 
 const mockComplaints = [
   { _id: "1", title: "Broken streetlight", category: "Infrastructure", status: "pending", user: "Rahim Uddin", date: "2024-04-01" },
@@ -17,10 +19,37 @@ const statusColor = (s) => {
 };
 
 export default function Complaints() {
-  const [complaints, setComplaints] = useState(mockComplaints);
+  const [complaints, setComplaints] = useState([]);
 
-  const updateStatus = (id, status) =>
-    setComplaints(complaints.map(c => c._id === id ? { ...c, status } : c));
+  const updateStatus = async (id, status) => {
+  // optimistic UI update
+  setComplaints(prev =>
+    prev.map(c => c._id === id ? { ...c, status } : c)
+  );
+
+  try {
+    await axiosInstance.put(`/complaint/list/${id}`, { status });
+  } catch (err) {
+    console.error(err);
+
+    // rollback if failed
+    setComplaints(prev =>
+      prev.map(c => c._id === id ? { ...c, status: "previous_status" } : c)
+    );
+  }
+};
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get("/complaint/list");
+        setComplaints(response.data);
+      } catch (error) {
+        console.log("Error updating complaint", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="complaints-wrapper">
@@ -42,7 +71,7 @@ export default function Complaints() {
                 <td className="complaints-td td-title">{c.title}</td>
                 <td className="complaints-td td-muted">{c.category}</td>
                 <td className="complaints-td td-muted">{c.user}</td>
-                <td className="complaints-td td-faint">{c.date}</td>
+                <td className="complaints-td td-faint">{new Date(c.date).toLocaleDateString()}</td>
                 <td className="complaints-td">
                   <span
                     className="complaints-badge"

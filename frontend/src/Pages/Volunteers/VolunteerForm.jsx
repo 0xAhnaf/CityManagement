@@ -13,6 +13,7 @@ function VolunteerForm() {
     email: "",
     phone: "",
   });
+  const currentUser = JSON.parse(localStorage.getItem("user"));
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,7 +25,8 @@ function VolunteerForm() {
     try {
       await axiosInstance.post("/app/volunteers", {
         ...formData,
-        eventId, // 👈 link to event
+        eventId,
+        userId: currentUser._id,
       });
 
       alert("Successfully registered as volunteer!");

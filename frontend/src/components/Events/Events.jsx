@@ -1,93 +1,153 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "./Events.css";
 
-const mockEvents = [
-  {
-    _id: "1",
-    title: "City Cleanliness Drive",
-    description: "Community-wide cleanliness campaign across major roads and parks.",
-    date: "2024-05-10",
-    time: "08:00",
-    location: "Kishorganj Sadar",
-    volunteers: [
-      { _id: "v1", name: "Arif Hassan", email: "arif@email.com", phone: "01711111111", status: "active" },
-      { _id: "v2", name: "Mitu Akter", email: "mitu@email.com", phone: "01722222222", status: "inactive" },
-    ],
-  },
-  {
-    _id: "2",
-    title: "Blood Donation Camp",
-    description: "Emergency blood donation drive at the district hospital.",
-    date: "2024-05-18",
-    time: "10:00",
-    location: "Kishorganj District Hospital",
-    volunteers: [
-      { _id: "v3", name: "Rakib Islam", email: "rakib@email.com", phone: "01733333333", status: "active" },
-    ],
-  },
-  {
-    _id: "3",
-    title: "Tree Plantation Program",
-    description: "Planting 500 saplings along the riverbank to combat deforestation.",
-    date: "2024-06-05",
-    time: "07:30",
-    location: "Narshunda River Bank",
-    volunteers: [],
-  },
-];
-
-const emptyForm = { title: "", description: "", date: "", time: "", location: "" };
+const emptyForm = {
+  type: "",
+  description: "",
+  date: "",
+  time: "",
+  location: "",
+};
 
 export default function Events() {
-  const [events, setEvents] = useState(mockEvents);
+  const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [eventForm, setEventForm] = useState(emptyForm);
   const [formError, setFormError] = useState("");
   const [expandedEvent, setExpandedEvent] = useState(null);
+  const [volunteers, setVolunteers] = useState({});
   const [contactModal, setContactModal] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  const handleAddEvent = () => {
-    if (!eventForm.title || !eventForm.date || !eventForm.time || !eventForm.location) {
-      setFormError("Please fill in all required fields.");
+  // FETCH EVENTS
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/events",
+        { withCredentials: true }
+      );
+      setEvents(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // FETCH VOLUNTEERS FOR AN EVENT
+  const fetchVolunteers = async (eventId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/app/volunteers/${eventId}`,
+        { withCredentials: true }
+      );
+      setVolunteers((prev) => ({ ...prev, [eventId]: res.data }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // TOGGLE VOLUNTEERS PANEL
+  const handleExpandEvent = (eventId) => {
+    if (expandedEvent === eventId) {
+      setExpandedEvent(null);
+    } else {
+      setExpandedEvent(eventId);
+      fetchVolunteers(eventId);
+    }
+  };
+
+  // CREATE EVENT
+  const handleAddEvent = async () => {
+    if (
+      !eventForm.type ||
+      !eventForm.date ||
+      !eventForm.time ||
+      !eventForm.location ||
+      !eventForm.description
+    ) {
+      setFormError("Please fill all required fields");
       return;
     }
-    const newEvent = { ...eventForm, _id: Date.now().toString(), volunteers: [] };
-    setEvents([newEvent, ...events]);
-    setEventForm(emptyForm);
-    setShowForm(false);
-    setFormError("");
+
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/events",
+        eventForm,
+        { withCredentials: true }
+      );
+      setEvents([res.data, ...events]);
+      setEventForm(emptyForm);
+      setShowForm(false);
+      setFormError("");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleDeleteEvent = (id) => {
-    setEvents(events.filter(e => e._id !== id));
-    setDeleteConfirm(null);
-    if (expandedEvent === id) setExpandedEvent(null);
+  // DELETE EVENT
+  const handleDeleteEvent = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/events/${id}`,
+        { withCredentials: true }
+      );
+      setEvents(events.filter((e) => e._id !== id));
+      setDeleteConfirm(null);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleRemoveVolunteer = (eventId, volId) =>
-    setEvents(events.map(e =>
-      e._id === eventId
-        ? { ...e, volunteers: e.volunteers.filter(v => v._id !== volId) }
-        : e
-    ));
+  // UPDATE VOLUNTEER STATUS
+  const updateVolunteerStatus = async (eventId, volunteerId, status) => {
+    try {
+      await axios.patch(
+        `http://localhost:8000/app/volunteers/${volunteerId}/status`,
+        { status },
+        { withCredentials: true }
+      );
+      setVolunteers((prev) => ({
+        ...prev,
+        [eventId]: prev[eventId].map((v) =>
+          v._id === volunteerId ? { ...v, status } : v
+        ),
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  const updateVolunteerStatus = (eventId, volId, status) =>
-    setEvents(events.map(e =>
-      e._id === eventId
-        ? { ...e, volunteers: e.volunteers.map(v => v._id === volId ? { ...v, status } : v) }
-        : e
-    ));
+  // REMOVE VOLUNTEER
+  const handleRemoveVolunteer = async (eventId, volunteerId) => {
+    try {
+      await axios.delete(
+        `http://localhost:8000/app/volunteers/${volunteerId}`,
+        { withCredentials: true }
+      );
+      setVolunteers((prev) => ({
+        ...prev,
+        [eventId]: prev[eventId].filter((v) => v._id !== volunteerId),
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="events-wrapper">
-
       {/* Contact modal */}
       {contactModal && (
         <div className="events-overlay" onClick={() => setContactModal(null)}>
-          <div className="events-modal" onClick={e => e.stopPropagation()}>
+          <div className="events-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-title">Volunteer details</div>
-            {[["Name", contactModal.name], ["Email", contactModal.email], ["Phone", contactModal.phone]].map(([l, v]) => (
+            {[
+              ["Name", contactModal.userId?.name],
+              ["Email", contactModal.userId?.email],
+              ["Phone", contactModal.phone],
+              ["Age", contactModal.age],
+            ].map(([l, v]) => (
               <div key={l} className="modal-field">
                 <span className="modal-field-label">{l}</span>
                 <span className="modal-field-value">{v}</span>
@@ -97,14 +157,21 @@ export default function Events() {
               <span className="modal-field-label">Status</span>
               <span
                 className="events-badge"
-                style={contactModal.status === "active"
-                  ? { background: "#D1FAE5", color: "#065F46" }
-                  : { background: "#FEF3C7", color: "#92400E" }}
+                style={
+                  contactModal.status === "active"
+                    ? { background: "#D1FAE5", color: "#065F46" }
+                    : { background: "#FEF3C7", color: "#92400E" }
+                }
               >
                 {contactModal.status}
               </span>
             </div>
-            <button className="modal-close-btn" onClick={() => setContactModal(null)}>Close</button>
+            <button
+              className="modal-close-btn"
+              onClick={() => setContactModal(null)}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -112,12 +179,25 @@ export default function Events() {
       {/* Delete confirm modal */}
       {deleteConfirm && (
         <div className="events-overlay" onClick={() => setDeleteConfirm(null)}>
-          <div className="events-modal" onClick={e => e.stopPropagation()}>
+          <div className="events-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-title">Delete event?</div>
-            <p className="modal-desc">This will permanently remove the event and all its volunteer enrollments.</p>
+            <p className="modal-desc">
+              This will permanently remove the event and all its volunteer
+              enrollments.
+            </p>
             <div className="modal-actions">
-              <button className="modal-cancel-btn" onClick={() => setDeleteConfirm(null)}>Cancel</button>
-              <button className="modal-delete-btn" onClick={() => handleDeleteEvent(deleteConfirm)}>Delete</button>
+              <button
+                className="modal-cancel-btn"
+                onClick={() => setDeleteConfirm(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="modal-delete-btn"
+                onClick={() => handleDeleteEvent(deleteConfirm)}
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
@@ -127,11 +207,17 @@ export default function Events() {
       <div className="events-header">
         <div>
           <h1 className="events-title">Events</h1>
-          <p className="events-sub">Create events and manage volunteer enrollments</p>
+          <p className="events-sub">
+            Create events and manage volunteer enrollments
+          </p>
         </div>
         <button
           className={`events-add-btn ${showForm ? "cancel" : ""}`}
-          onClick={() => { setShowForm(!showForm); setFormError(""); setEventForm(emptyForm); }}
+          onClick={() => {
+            setShowForm(!showForm);
+            setFormError("");
+            setEventForm(emptyForm);
+          }}
         >
           {showForm ? "Cancel" : "+ Add event"}
         </button>
@@ -139,77 +225,82 @@ export default function Events() {
 
       {/* Add event form */}
       {showForm && (
-        <div className="events-form-card">
-          <div className="events-form-heading">New event</div>
-          <div className="events-form-grid">
-            <div className="form-field">
-              <label className="form-label">Title *</label>
-              <input
-                className="form-input"
-                placeholder="e.g. City Cleanliness Drive"
-                value={eventForm.title}
-                onChange={e => setEventForm({ ...eventForm, title: e.target.value })}
-              />
-            </div>
-            <div className="form-field">
-              <label className="form-label">Location *</label>
-              <input
-                className="form-input"
-                placeholder="e.g. Kishorganj Sadar"
-                value={eventForm.location}
-                onChange={e => setEventForm({ ...eventForm, location: e.target.value })}
-              />
-            </div>
-            <div className="form-field">
-              <label className="form-label">Date *</label>
-              <input
-                className="form-input"
-                type="date"
-                value={eventForm.date}
-                onChange={e => setEventForm({ ...eventForm, date: e.target.value })}
-              />
-            </div>
-            <div className="form-field">
-              <label className="form-label">Time *</label>
-              <input
-                className="form-input"
-                type="time"
-                value={eventForm.time}
-                onChange={e => setEventForm({ ...eventForm, time: e.target.value })}
-              />
-            </div>
-          </div>
-          <div className="form-field">
-            <label className="form-label">Description</label>
-            <textarea
-              className="form-textarea"
-              rows={3}
-              placeholder="Describe the event..."
-              value={eventForm.description}
-              onChange={e => setEventForm({ ...eventForm, description: e.target.value })}
-            />
-          </div>
-          {formError && <p className="form-error">{formError}</p>}
-          <button className="form-submit-btn" onClick={handleAddEvent}>Create event</button>
+        <div className="eventsFormCardForm">
+          <select
+            className="form-select"
+            value={eventForm.type}
+            onChange={(e) =>
+              setEventForm({ ...eventForm, type: e.target.value })
+            }
+          >
+            <option value="">Select Event Type</option>
+            <option value="Environmental">Cleaning Drive</option>
+            <option value="Senior">Helping Old</option>
+            <option value="Community">Community Events</option>
+            <option value="Educational">Educational Program</option>
+          </select>
+
+          <input
+            className="eventsInputForm"
+            placeholder="Location"
+            value={eventForm.location}
+            onChange={(e) =>
+              setEventForm({ ...eventForm, location: e.target.value })
+            }
+          />
+
+          <input
+            className="eventsInputForm"
+            type="date"
+            value={eventForm.date}
+            onChange={(e) =>
+              setEventForm({ ...eventForm, date: e.target.value })
+            }
+          />
+
+          <input
+            className="eventsInputForm"
+            type="time"
+            value={eventForm.time}
+            onChange={(e) =>
+              setEventForm({ ...eventForm, time: e.target.value })
+            }
+          />
+
+          <textarea
+            className="eventsTextareaForm"
+            placeholder="Description"
+            value={eventForm.description}
+            onChange={(e) =>
+              setEventForm({ ...eventForm, description: e.target.value })
+            }
+          />
+
+          {formError && <p className="eventsErrorForm">{formError}</p>}
+
+          <button className="eventsButtonForm" onClick={handleAddEvent}>
+            Create Event
+          </button>
         </div>
       )}
 
       {/* Event list */}
       <div className="events-list">
         {events.length === 0 && (
-          <div className="events-empty">No events yet. Create your first event above.</div>
+          <div className="events-empty">
+            No events yet. Create your first event above.
+          </div>
         )}
 
-        {events.map(ev => (
+        {events.map((ev) => (
           <div key={ev._id} className="event-card">
-
-            {/* Event header */}
             <div className="event-card-header">
               <div className="event-card-info">
                 <div className="event-card-top">
-                  <span className="event-card-title">{ev.title}</span>
+                  <span className="event-card-title">{ev.type}</span>
                   <span className="event-vol-badge">
-                    {ev.volunteers.length} volunteer{ev.volunteers.length !== 1 ? "s" : ""}
+                    {volunteers[ev._id]?.length ?? 0} volunteer
+                    {volunteers[ev._id]?.length !== 1 ? "s" : ""}
                   </span>
                 </div>
                 {ev.description && (
@@ -224,7 +315,7 @@ export default function Events() {
               <div className="event-card-actions">
                 <button
                   className={`event-vol-btn ${expandedEvent === ev._id ? "active" : ""}`}
-                  onClick={() => setExpandedEvent(expandedEvent === ev._id ? null : ev._id)}
+                  onClick={() => handleExpandEvent(ev._id)}
                 >
                   {expandedEvent === ev._id ? "Hide" : "Volunteers"}
                 </button>
@@ -241,29 +332,43 @@ export default function Events() {
             {expandedEvent === ev._id && (
               <div className="event-vol-panel">
                 <div className="event-vol-heading">
-                  Enrolled volunteers {ev.volunteers.length > 0 && `(${ev.volunteers.length})`}
+                  Enrolled volunteers{" "}
+                  {volunteers[ev._id]?.length > 0 &&
+                    `(${volunteers[ev._id].length})`}
                 </div>
 
-                {ev.volunteers.length === 0 ? (
-                  <p className="event-vol-empty">No volunteers enrolled yet. They will appear here when they sign up from the public site.</p>
+                {!volunteers[ev._id] || volunteers[ev._id].length === 0 ? (
+                  <p className="event-vol-empty">
+                    No volunteers enrolled yet.
+                  </p>
                 ) : (
                   <div className="event-vol-table-wrapper">
                     <table className="event-vol-table">
                       <thead>
                         <tr className="event-vol-thead-row">
-                          {["Name", "Status", "Actions"].map(h => (
+                          {["Name", "Phone", "Age", "Status", "Actions"].map((h) => (
                             <th key={h} className="event-vol-th">{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
-                        {ev.volunteers.map(v => (
+                        {volunteers[ev._id].map((v) => (
                           <tr key={v._id} className="event-vol-row">
-                            <td className="event-vol-td vol-name">{v.name}</td>
+                            <td className="event-vol-td vol-name">
+                              {v.userId?.name}
+                            </td>
+                            <td className="event-vol-td">{v.phone}</td>
+                            <td className="event-vol-td">{v.age}</td>
                             <td className="event-vol-td">
                               <select
                                 value={v.status}
-                                onChange={e => updateVolunteerStatus(ev._id, v._id, e.target.value)}
+                                onChange={(e) =>
+                                  updateVolunteerStatus(
+                                    ev._id,
+                                    v._id,
+                                    e.target.value
+                                  )
+                                }
                                 className="vol-status-select"
                               >
                                 <option value="active">Active</option>
@@ -280,7 +385,9 @@ export default function Events() {
                                 </button>
                                 <button
                                   className="vol-remove-btn"
-                                  onClick={() => handleRemoveVolunteer(ev._id, v._id)}
+                                  onClick={() =>
+                                    handleRemoveVolunteer(ev._id, v._id)
+                                  }
                                 >
                                   Remove
                                 </button>
