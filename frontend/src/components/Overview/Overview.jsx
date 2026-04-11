@@ -1,26 +1,6 @@
+import { useEffect, useState } from "react";
+import api from "../../utils/AxiosInstance";
 import "./Overview.css";
-
-const mockComplaints = [
-  { _id: "1", title: "Broken streetlight", user: "Rahim Uddin", date: "2024-04-01", status: "pending" },
-  { _id: "2", title: "Garbage not collected", user: "Fatema Begum", date: "2024-04-02", status: "in-progress" },
-  { _id: "3", title: "Pothole on main road", user: "Karim Sheikh", date: "2024-04-03", status: "resolved" },
-  { _id: "4", title: "Water supply issue", user: "Nasrin Akter", date: "2024-04-04", status: "pending" },
-];
-
-const mockEvents = [
-  { _id: "1", title: "City Cleanliness Drive", date: "2024-05-10", location: "Kishorganj Sadar", volunteers: [1, 2] },
-  { _id: "2", title: "Blood Donation Camp", date: "2024-05-18", location: "District Hospital", volunteers: [1] },
-  { _id: "3", title: "Tree Plantation Program", date: "2024-06-05", location: "Narshunda River Bank", volunteers: [] },
-];
-
-const stats = [
-  { label: "Total complaints", value: 5, accent: "#3B82F6" },
-  { label: "Pending", value: 2, accent: "#F59E0B" },
-  { label: "Resolved", value: 1, accent: "#10B981" },
-  { label: "Active volunteers", value: 2, accent: "#8B5CF6" },
-  { label: "Available donors", value: 4, accent: "#EF4444" },
-  { label: "Total events", value: 3, accent: "#0EA5E9" },
-];
 
 const statusColor = (s) => {
   if (s === "pending") return { bg: "#FEF3C7", color: "#92400E" };
@@ -30,12 +10,53 @@ const statusColor = (s) => {
 };
 
 export default function Overview() {
+  const [complaints, setComplaints] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [donorCount, setDonorCount] = useState(0);
+
+  useEffect(() => {
+    fetchAll();
+  }, []);
+
+  const fetchAll = async () => {
+    try {
+      const [complaintsRes, eventsRes, donorsRes] = await Promise.allSettled([
+        api.get("/complaint/list"),
+        api.get("/api/events"),
+        api.get("/donors", { params: { available: true } }),
+      ]);
+
+      if (complaintsRes.status === "fulfilled") setComplaints(complaintsRes.value.data);
+      if (eventsRes.status === "fulfilled") setEvents(eventsRes.value.data);
+      if (donorsRes.status === "fulfilled") setDonorCount(donorsRes.value.data.length);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const total = complaints.length;
+  const pending = complaints.filter((c) => c.status === "pending").length;
+  const resolved = complaints.filter((c) => c.status === "resolved").length;
+
+  const stats = [
+    { label: "Total complaints", value: total, accent: "#3B82F6" },
+    { label: "Pending", value: pending, accent: "#F59E0B" },
+    { label: "Resolved", value: resolved, accent: "#10B981" },
+    { label: "Total events", value: events.length, accent: "#0EA5E9" },
+    { label: "Available donors", value: donorCount, accent: "#EF4444" },
+  ];
+
+  const recentComplaints = complaints.slice(0, 4);
+
+  const upcomingEvents = [...events]
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .slice(0, 4);
+
   return (
     <div className="overview-wrapper">
       <h1 className="overview-title">Overview</h1>
       <p className="overview-sub">City management at a glance</p>
 
-      {/* Stat cards */}
       <div className="overview-stats">
         {stats.map((s) => (
           <div
@@ -49,47 +70,45 @@ export default function Overview() {
         ))}
       </div>
 
-      {/* Bottom two panels */}
       <div className="overview-panels">
-
-        {/* Recent complaints */}
         <div className="overview-panel">
           <div className="panel-heading">Recent complaints</div>
-          {mockComplaints.map((c) => (
-            <div key={c._id} className="panel-row">
-              <div className="panel-row-left">
-                <span className="panel-row-title">{c.title}</span>
-                <span className="panel-row-sub">{c.user} · {c.date}</span>
+          {recentComplaints.length === 0 ? (
+            <p className="panel-empty">No complaints yet.</p>
+          ) : (
+            recentComplaints.map((c) => (
+              <div key={c._id} className="panel-row">
+                <div className="panel-row-left">
+                  <span className="panel-row-title">{c.title}</span>
+                  <span className="panel-row-sub">
+                    {c.user ?? "Unknown"} · {c.date?.slice(0, 10)}
+                  </span>
+                </div>
+                <span className="badge" style={statusColor(c.status)}>
+                  {c.status}
+                </span>
               </div>
-              <span
-                className="badge"
-                style={statusColor(c.status)}
-              >
-                {c.status}
-              </span>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
-        {/* Upcoming events */}
         <div className="overview-panel">
           <div className="panel-heading">Upcoming events</div>
-          {mockEvents.length === 0 ? (
+          {upcomingEvents.length === 0 ? (
             <p className="panel-empty">No events yet.</p>
           ) : (
-            mockEvents.map((e) => (
+            upcomingEvents.map((e) => (
               <div key={e._id} className="panel-row">
                 <div className="panel-row-left">
-                  <span className="panel-row-title">{e.title}</span>
+                  <span className="panel-row-title">{e.type}</span>
                   <span className="panel-row-sub">
-                    {e.date} · {e.location} · {e.volunteers.length} volunteer{e.volunteers.length !== 1 ? "s" : ""}
+                    {e.date} · {e.location}
                   </span>
                 </div>
               </div>
             ))
           )}
         </div>
-
       </div>
     </div>
   );

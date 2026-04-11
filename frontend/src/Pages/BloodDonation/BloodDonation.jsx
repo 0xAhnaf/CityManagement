@@ -32,24 +32,39 @@ function BloodDonation() {
   const [searched, setSearched]             = useState(false);
   const [revealedPhones, setRevealedPhones] = useState({});
   const [submitting, setSubmitting]         = useState(false);
+  const [myProfile, setMyProfile]           = useState(null);
+  const [availability, setAvailability]     = useState(true);
 
   const [form, setForm] = useState({
     name: "", phone: "", blood: "", district: "", age: "", lastDonated: "",
   });
 
   useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const { data } = await api.get("/donors/counts");
-        setBloodCounts(data);
-      } catch (err) {
-        toast.error("Failed to load blood supply data.");
-      } finally {
-        setLoadingCounts(false);
-      }
-    };
     fetchCounts();
+    fetchMyProfile();
   }, []);
+
+  const fetchCounts = async () => {
+    try {
+      const { data } = await api.get("/donors/counts");
+      setBloodCounts(data);
+    } catch (err) {
+      toast.error("Failed to load blood supply data.");
+    } finally {
+      setLoadingCounts(false);
+    }
+  };
+
+  const fetchMyProfile = async () => {
+    try {
+      const { data } = await api.get("/donors/me");
+      setMyProfile(data);
+      setAvailability(data.available ?? true);
+    } catch (err) {
+      // not registered yet, that's fine
+      setMyProfile(null);
+    }
+  };
 
   const handleSearch = async () => {
     setLoadingDonors(true);
@@ -58,7 +73,6 @@ function BloodDonation() {
       const params = {};
       if (searchBlood    !== "Any blood group") params.bloodGroup = searchBlood;
       if (searchDistrict !== "Any district")    params.district   = searchDistrict;
-
       const { data } = await api.get("/donors", { params });
       setDonors(data);
     } catch (err) {
@@ -75,15 +89,14 @@ function BloodDonation() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async () => {
-   if (!form.name || !form.phone || !form.blood || !form.district || !form.age) {
-     toast.error("Please fill in all required fields.");
-     return;
-   }
-
-   if (Number(form.age) < 18 || Number(form.age) > 65) {
-     toast.error("Age must be between 18 and 65.");
-     return;
-   }
+    if (!form.name || !form.phone || !form.blood || !form.district || !form.age) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+    if (Number(form.age) < 18 || Number(form.age) > 65) {
+      toast.error("Age must be between 18 and 65.");
+      return;
+    }
     setSubmitting(true);
     try {
       await api.post("/donors", {
@@ -97,9 +110,8 @@ function BloodDonation() {
       toast.success("You are now registered as a donor!");
       setShowForm(false);
       setForm({ name: "", phone: "", blood: "", district: "", age: "", lastDonated: "" });
-
-      const { data } = await api.get("/donors/counts");
-      setBloodCounts(data);
+      fetchCounts();
+      fetchMyProfile();
     } catch (err) {
       const msg = err.response?.data?.message || "Registration failed.";
       toast.error(msg);
@@ -108,11 +120,21 @@ function BloodDonation() {
     }
   };
 
+  const toggleAvailability = async () => {
+  try {
+    const newStatus = !availability;
+    await api.patch("/donors/me/availability", { available: newStatus });
+    setAvailability(newStatus);
+    toast.success(newStatus ? "You are now available" : "You are now unavailable");
+  } catch (err) {
+    toast.error("Failed to update availability.");
+  }
+};
+
   return (
     <div className="bloodDonationPage">
       <div className="container">
 
-       
         <div className="heroSection">
           <div className="heroText">
             <h1 className="heroTitle">
@@ -123,14 +145,22 @@ function BloodDonation() {
               citizens in emergencies across Bangladesh.
             </p>
             <div className="heroButtons">
-              <button className="donateBtn" onClick={() => setShowForm(true)}>
-                Register as donor
-              </button>
+              {myProfile ? (
+                <div className="donorStatusRow">
+                  <span className="registeredBadge">✓ Registered as donor</span>
+                  <button className={`availabilityBtn ${availability ? "unavailable" : "available"}`} onClick={toggleAvailability}>
+                    {availability ? "✗ Unavailable" : "✓ Available"}
+                  </button>
+                </div>
+              ) : (
+                <button className="donateBtn" onClick={() => setShowForm(true)}>
+                  Register as donor
+                </button>
+              )}
             </div>
           </div>
         </div>
 
-        
         <div className="bloodStatusSection">
           <h2 className="statusTitle">Real-time blood supply status</h2>
           {loadingCounts ? (
@@ -153,7 +183,6 @@ function BloodDonation() {
           )}
         </div>
 
-        
         <div className="searchSection">
           <h2 className="searchTitle">Find a donor</h2>
           <p className="searchSub">
@@ -216,7 +245,6 @@ function BloodDonation() {
           )}
         </div>
 
-        
         <div className="eligibilitySection">
           <div className="eligibilityCardMain">
             <h2>Am I eligible?</h2>
@@ -242,7 +270,6 @@ function BloodDonation() {
 
       </div>
 
-      
       {showForm && (
         <div className="popupOverlay">
           <div className="popupCard">
