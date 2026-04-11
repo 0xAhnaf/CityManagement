@@ -21,7 +21,7 @@ const Step2Location = ({ nextStep, prevStep, onLocationChange }) => {
     setComplaint((prev) =>{
       const updated = {
         ...prev,
-        location: location.address
+        location
       }
       console.log(updated);
       return updated;

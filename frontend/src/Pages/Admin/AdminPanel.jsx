@@ -4,6 +4,7 @@ import Overview from "../../components/Overview/Overview";
 import Complaints from "../../components/Complaints/Complaints";
 import Donors from "../../components/Donors/Donors";
 import Events from "../../components/Events/Events";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 const navItems = [
   { key: "dashboard", label: "Overview" },
@@ -14,10 +15,14 @@ const navItems = [
 
 export default function AdminPanel() {
   const [tab, setTab] = useState("dashboard");
+  const { logout } = useAuthContext();
 
   return (
     <div className="admin-wrapper">
-      <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500&display=swap"
+        rel="stylesheet"
+      />
 
       <aside className="admin-sidebar">
         <div className="admin-sidebar-header">
@@ -25,17 +30,23 @@ export default function AdminPanel() {
           <span className="admin-sidebar-title">Dashboard</span>
         </div>
 
-        <nav className="admin-nav">
-          {navItems.map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setTab(key)}
-              className={`admin-nav-btn ${tab === key ? "active" : ""}`}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
+        
+          <nav className="admin-nav">
+            {navItems.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`admin-nav-btn ${tab === key ? "active" : ""}`}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+          
+          <button onClick={logout} className={`admin-nav-btn`}>
+            Log out
+          </button>
+        
 
         <div className="admin-sidebar-footer">
           <span className="admin-footer-label">Logged in as</span>
@@ -44,10 +55,10 @@ export default function AdminPanel() {
       </aside>
 
       <main className="admin-main">
-        {tab === "dashboard"  && <Overview />}
+        {tab === "dashboard" && <Overview />}
         {tab === "complaints" && <Complaints />}
-        {tab === "donors"     && <Donors />}
-        {tab === "events"     && <Events />}
+        {tab === "donors" && <Donors />}
+        {tab === "events" && <Events />}
       </main>
     </div>
   );

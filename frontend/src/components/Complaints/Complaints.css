@@ -108,3 +108,103 @@
   border-color: #19d3c5;
   box-shadow: 0 0 0 3px rgba(25, 211, 197, 0.1);
 }
+
+/* Overlay stays mostly same but slightly themed */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 15, 30, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content redesigned to match complaints-table-wrapper */
+.modal-content {
+  background: rgba(10, 20, 40, 0.95);
+  border: 1px solid #1a3a5c;
+  border-radius: 12px;
+  padding: 20px;
+  width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  color: #e2eaf4;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Headings */
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+/* Text styling */
+.modal-content p {
+  margin: 6px 0;
+  font-size: 13px;
+  color: #c8ddf0;
+}
+
+.modal-content strong {
+  color: #7fa3c7;
+}
+
+/* Evidence section */
+.evidence-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* Images */
+.evidence-image {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #1a3a5c;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.evidence-image:hover {
+  transform: scale(1.05);
+  border-color: #19d3c5;
+}
+
+/* Close button styled like your UI */
+.modal-content button {
+  margin-top: 16px;
+  padding: 6px 12px;
+  background: rgba(7, 20, 39, 0.9);
+  border: 1px solid #1a3a5c;
+  border-radius: 6px;
+  color: #c8ddf0;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s;
+}
+
+.modal-content button:hover {
+  border-color: #19d3c5;
+  color: #ffffff;
+}
+
+.modal-footer-buttons{
+  display: flex;
+  justify-content: space-between;
+}
+
+.map-container {
+  margin-top: 12px;
+  border: 1px solid #1a3a5c;
+  border-radius: 10px;
+  overflow: hidden;
+}

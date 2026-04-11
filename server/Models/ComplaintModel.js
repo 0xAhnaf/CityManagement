@@ -5,10 +5,20 @@ const evidenceSchema = new Schema(
   { _id: false }
 );
 
+const locationSchema = new Schema(
+  {
+    address: { type: String, required: true },
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true }
+  },
+  { _id: false }
+);
+
+
 const complaintSchema = new mongoose.Schema({
   title: String,
   category: String,
-  location: String,
+  location: locationSchema,
   evidence: [evidenceSchema],
   description: String,
   urgency: String,

@@ -4,7 +4,8 @@ import fs from "fs";
 
 export const submitComplaint = async (req, res) => {
   try {
-    const { title, category, location, description, urgency, date } = req.body;
+    const { title, category, description, urgency, date } = req.body;
+    const location = JSON.parse(req.body.location);
     const files = req.files;
     let evidenceUrls = [];
 
@@ -69,4 +70,20 @@ export const updateComplaintStatusById = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
+};
+
+export const deleteComplaintById = async (req, res) => {
+    try {
+      const id = req.params.id;
+
+        const deletedComplaint = await Complaint.findById(id);
+
+        if (!deletedComplaint) {
+            return res.status(400).json({ message: "Complaint not found" });
+        }
+        await Complaint.findByIdAndDelete(id);
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
 };
