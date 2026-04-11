@@ -1,65 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import "./Events.css";
 
-const mockEvents = [
-  {
-    _id: "1",
-    title: "City Cleanliness Drive",
-    description:
-      "Community-wide cleanliness campaign across major roads and parks.",
-    date: "2024-05-10",
-    time: "08:00",
-    location: "Kishorganj Sadar",
-    volunteers: [
-      {
-        _id: "v1",
-        name: "Arif Hassan",
-        email: "arif@email.com",
-        phone: "01711111111",
-        status: "active",
-      },
-      {
-        _id: "v2",
-        name: "Mitu Akter",
-        email: "mitu@email.com",
-        phone: "01722222222",
-        status: "inactive",
-      },
-    ],
-  },
-  {
-    _id: "2",
-    title: "Blood Donation Camp",
-    description: "Emergency blood donation drive at the district hospital.",
-    date: "2024-05-18",
-    time: "10:00",
-    location: "Kishorganj District Hospital",
-    volunteers: [
-      {
-        _id: "v3",
-        name: "Rakib Islam",
-        email: "rakib@email.com",
-        phone: "01733333333",
-        status: "active",
-      },
-    ],
-  },
-  {
-    _id: "3",
-    title: "Tree Plantation Program",
-    description:
-      "Planting 500 saplings along the riverbank to combat deforestation.",
-    date: "2024-06-05",
-    time: "07:30",
-    location: "Narshunda River Bank",
-    volunteers: [],
-  },
-];
-
 const emptyForm = {
-  title: "",
+  type: "",
   description: "",
   date: "",
   time: "",
@@ -67,14 +11,53 @@ const emptyForm = {
 };
 
 export default function Events() {
-  const [events, setEvents] = useState(mockEvents);
+  const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [eventForm, setEventForm] = useState(emptyForm);
   const [formError, setFormError] = useState("");
   const [expandedEvent, setExpandedEvent] = useState(null);
+  const [volunteers, setVolunteers] = useState({});
   const [contactModal, setContactModal] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const navigate = useNavigate();
+
+  // FETCH EVENTS
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/events",
+        { withCredentials: true }
+      );
+      setEvents(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // FETCH VOLUNTEERS FOR AN EVENT
+  const fetchVolunteers = async (eventId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/app/volunteers/${eventId}`,
+        { withCredentials: true }
+      );
+      setVolunteers((prev) => ({ ...prev, [eventId]: res.data }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // TOGGLE VOLUNTEERS PANEL
+  const handleExpandEvent = (eventId) => {
+    if (expandedEvent === eventId) {
+      setExpandedEvent(null);
+    } else {
+      setExpandedEvent(eventId);
+      fetchVolunteers(eventId);
+    }
+  };
 
   // CREATE EVENT
   const handleAddEvent = async () => {
@@ -82,7 +65,8 @@ export default function Events() {
       !eventForm.type ||
       !eventForm.date ||
       !eventForm.time ||
-      !eventForm.location
+      !eventForm.location ||
+      !eventForm.description
     ) {
       setFormError("Please fill all required fields");
       return;
@@ -92,10 +76,9 @@ export default function Events() {
       const res = await axios.post(
         "http://localhost:8000/api/events",
         eventForm,
+        { withCredentials: true }
       );
-
       setEvents([res.data, ...events]);
-      navigate("/admin"); //navigation problem here
       setEventForm(emptyForm);
       setShowForm(false);
       setFormError("");
@@ -107,8 +90,46 @@ export default function Events() {
   // DELETE EVENT
   const handleDeleteEvent = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/api/events/${id}`);
+      await axios.delete(`http://localhost:8000/api/events/${id}`,
+        { withCredentials: true }
+      );
       setEvents(events.filter((e) => e._id !== id));
+      setDeleteConfirm(null);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // UPDATE VOLUNTEER STATUS
+  const updateVolunteerStatus = async (eventId, volunteerId, status) => {
+    try {
+      await axios.patch(
+        `http://localhost:8000/app/volunteers/${volunteerId}/status`,
+        { status },
+        { withCredentials: true }
+      );
+      setVolunteers((prev) => ({
+        ...prev,
+        [eventId]: prev[eventId].map((v) =>
+          v._id === volunteerId ? { ...v, status } : v
+        ),
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // REMOVE VOLUNTEER
+  const handleRemoveVolunteer = async (eventId, volunteerId) => {
+    try {
+      await axios.delete(
+        `http://localhost:8000/app/volunteers/${volunteerId}`,
+        { withCredentials: true }
+      );
+      setVolunteers((prev) => ({
+        ...prev,
+        [eventId]: prev[eventId].filter((v) => v._id !== volunteerId),
+      }));
     } catch (err) {
       console.log(err);
     }
@@ -122,9 +143,10 @@ export default function Events() {
           <div className="events-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-title">Volunteer details</div>
             {[
-              ["Name", contactModal.name],
-              ["Email", contactModal.email],
+              ["Name", contactModal.userId?.name],
+              ["Email", contactModal.userId?.email],
               ["Phone", contactModal.phone],
+              ["Age", contactModal.age],
             ].map(([l, v]) => (
               <div key={l} className="modal-field">
                 <span className="modal-field-label">{l}</span>
@@ -210,15 +232,14 @@ export default function Events() {
             onChange={(e) =>
               setEventForm({ ...eventForm, type: e.target.value })
             }
-            required
           >
             <option value="">Select Event Type</option>
-
-            <option value="Environmental"> Cleaning Drive</option>
-            <option value="Senior"> Helping Old</option>
-            <option value="Community"> Community Events</option>
-            <option value="Educational"> Educational Program</option>
+            <option value="Environmental">Cleaning Drive</option>
+            <option value="Senior">Helping Old</option>
+            <option value="Community">Community Events</option>
+            <option value="Educational">Educational Program</option>
           </select>
+
           <input
             className="eventsInputForm"
             placeholder="Location"
@@ -273,14 +294,13 @@ export default function Events() {
 
         {events.map((ev) => (
           <div key={ev._id} className="event-card">
-            {/* Event header */}
             <div className="event-card-header">
               <div className="event-card-info">
                 <div className="event-card-top">
-                  <span className="event-card-title">{ev.title}</span>
+                  <span className="event-card-title">{ev.type}</span>
                   <span className="event-vol-badge">
-                    {ev.volunteers.length} volunteer
-                    {ev.volunteers.length !== 1 ? "s" : ""}
+                    {volunteers[ev._id]?.length ?? 0} volunteer
+                    {volunteers[ev._id]?.length !== 1 ? "s" : ""}
                   </span>
                 </div>
                 {ev.description && (
@@ -295,9 +315,7 @@ export default function Events() {
               <div className="event-card-actions">
                 <button
                   className={`event-vol-btn ${expandedEvent === ev._id ? "active" : ""}`}
-                  onClick={() =>
-                    setExpandedEvent(expandedEvent === ev._id ? null : ev._id)
-                  }
+                  onClick={() => handleExpandEvent(ev._id)}
                 >
                   {expandedEvent === ev._id ? "Hide" : "Volunteers"}
                 </button>
@@ -315,30 +333,32 @@ export default function Events() {
               <div className="event-vol-panel">
                 <div className="event-vol-heading">
                   Enrolled volunteers{" "}
-                  {ev.volunteers.length > 0 && `(${ev.volunteers.length})`}
+                  {volunteers[ev._id]?.length > 0 &&
+                    `(${volunteers[ev._id].length})`}
                 </div>
 
-                {ev.volunteers.length === 0 ? (
+                {!volunteers[ev._id] || volunteers[ev._id].length === 0 ? (
                   <p className="event-vol-empty">
-                    No volunteers enrolled yet. They will appear here when they
-                    sign up from the public site.
+                    No volunteers enrolled yet.
                   </p>
                 ) : (
                   <div className="event-vol-table-wrapper">
                     <table className="event-vol-table">
                       <thead>
                         <tr className="event-vol-thead-row">
-                          {["Name", "Status", "Actions"].map((h) => (
-                            <th key={h} className="event-vol-th">
-                              {h}
-                            </th>
+                          {["Name", "Phone", "Age", "Status", "Actions"].map((h) => (
+                            <th key={h} className="event-vol-th">{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
-                        {ev.volunteers.map((v) => (
+                        {volunteers[ev._id].map((v) => (
                           <tr key={v._id} className="event-vol-row">
-                            <td className="event-vol-td vol-name">{v.name}</td>
+                            <td className="event-vol-td vol-name">
+                              {v.userId?.name}
+                            </td>
+                            <td className="event-vol-td">{v.phone}</td>
+                            <td className="event-vol-td">{v.age}</td>
                             <td className="event-vol-td">
                               <select
                                 value={v.status}
@@ -346,7 +366,7 @@ export default function Events() {
                                   updateVolunteerStatus(
                                     ev._id,
                                     v._id,
-                                    e.target.value,
+                                    e.target.value
                                   )
                                 }
                                 className="vol-status-select"
