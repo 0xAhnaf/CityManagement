@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.patch("/me/availability", checkToken, updateAvailability);
-router.get("/",        checkToken, getDonors);
+router.get("/", getDonors);
 router.post("/",       checkToken, registerDonor);
 router.get("/counts",  checkToken, getBloodGroupCounts);
 router.get("/me",      checkToken, getMyDonorProfile);
