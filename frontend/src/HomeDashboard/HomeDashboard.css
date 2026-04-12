@@ -199,36 +199,6 @@
   line-height: 1.6;
 }
 
-
-.btn2 {
-  background: linear-gradient(135deg,#00B8A9,#22C55E);
-  color: white;
-
-  padding: 12px 18px;
-  font-size: 14px;
-
-  border-radius: 10px;
-  cursor: pointer;
-  border: 0;
-
-  display: inline-flex;
-  align-items: center;
-
-  margin-top: 20px;
-
-  transition: all 0.3s ease;
-}
-
-.btn2 img {
-  width: 16px;
-  margin-left: 8px;
-}
-
-.btn2:hover {
-  transform: translateY(-2px);
-}
-
-
 @media (min-width: 768px) {
 
   .title h3 {
