@@ -13,6 +13,7 @@ import PublicRoute from "./utils/PublicRoute";
 import { Toaster } from "react-hot-toast";
 import AdminPanel from "./Pages/Admin/AdminPanel";
 import { useAuthContext } from "./contexts/AuthContext";
+import CarbonFootprintDisplay from './CarbonFootprintDisplay';
 
 function AdminRoute() {
   const { user } = useAuthContext();
@@ -51,6 +52,7 @@ function App() {
         </Route>
       </Routes>
       <Toaster position="bottom-right" />
+      <CarbonFootprintDisplay />
     </main>
   );
 }
