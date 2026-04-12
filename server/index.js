@@ -10,6 +10,7 @@ import DonorRouter from "./Routes/DonorRoutes.js";
 import eventRoute from "./Routes/eventRoute.js";
 import volunteerRoute from "./Routes/volunteerRoute.js";
 import log from "./Middlewares/logger.js";
+import carbonTracker from "./Middlewares/carbonTracker.js"; // 👈 added
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
@@ -43,6 +44,7 @@ app.use(
   }),
 );
 app.use(log);
+app.use(carbonTracker); // 👈 added
 
 app.use("/auth", AuthRouter);
 app.use("/user", UserRouter);
