@@ -1,4 +1,5 @@
 import Volunteer from "../Models/volunteerModel.js";
+import Event from "../Models/eventModel.js"
 
 // ENROLL
 export const createVolunteer = async (req, res) => {
@@ -38,12 +39,41 @@ export const checkVolunteer = async (req, res) => {
   }
 };
 
+export const checkVolunteerByUserId = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const exists = await Volunteer.findOne({ userId });
+
+    let nextEventDate = null;
+
+    if (exists) {
+      const today = new Date().toISOString().split("T")[0];
+
+      const nextEvent = await Event.findOne({
+        date: { $gte: today },
+      }).sort({ date: 1 });
+
+      if (nextEvent) {
+        nextEventDate = nextEvent.date;
+      }
+    }
+
+    res.json({
+      enrolled: !!exists,
+      nextEventDate,
+    });
+  } catch (error) {
+    res.status(500).json({ errorMessage: error.message });
+  }
+};
+
 // GET ALL VOLUNTEERS FOR AN EVENT (admin)
 export const getVolunteersByEvent = async (req, res) => {
   try {
     const data = await Volunteer.find({ eventId: req.params.eventId }).populate(
       "userId",
-      "name email"
+      "name email",
     );
     res.json(data);
   } catch (error) {
@@ -58,7 +88,7 @@ export const updateVolunteerStatus = async (req, res) => {
     const updated = await Volunteer.findByIdAndUpdate(
       req.params.id,
       { status },
-      { new: true }
+      { new: true },
     );
     res.json(updated);
   } catch (error) {

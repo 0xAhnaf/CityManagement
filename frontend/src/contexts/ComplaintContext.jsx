@@ -15,7 +15,7 @@ export const ComplaintProvider = ({ children }) => {
     location: {
       lat: null,
       lng: null,
-      address: ""
+      address: "",
     },
     evidence: [],
     description: "",
@@ -39,10 +39,11 @@ export const ComplaintProvider = ({ children }) => {
       submitData.evidence.forEach((file) => {
         formData.append("evidence", file);
       });
-      const response = await axiosInstance.post(
-        "/complaint/submit",
-        formData,
-      );
+      const response = await axiosInstance.post("/complaint/submit", formData);
+
+      const res2 = await axiosInstance.post("/activity/create", {
+        message: `Complaint on "${submitData.title}" submitted`,
+      });
       const { data } = response;
       toast.success(data.message);
       navigate("/");
@@ -51,7 +52,7 @@ export const ComplaintProvider = ({ children }) => {
         toast.error(error.response.data.message);
       } else {
         console.log(error);
-        
+
         toast.error("Something went wrong");
       }
     }

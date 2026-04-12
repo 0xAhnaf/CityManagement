@@ -9,6 +9,7 @@ import ComplaintRouter from "./Routes/ComplaintRouter.js";
 import DonorRouter from "./Routes/DonorRoutes.js";
 import eventRoute from "./Routes/eventRoute.js";
 import volunteerRoute from "./Routes/volunteerRoute.js";
+import activityRoute from "./Routes/ActivityRouter.js"
 import log from "./Middlewares/logger.js";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
@@ -50,6 +51,7 @@ app.use("/complaint", ComplaintRouter);
 app.use("/donors", DonorRouter);
 app.use("/api", eventRoute);
 app.use("/app", volunteerRoute);
+app.use("/activity", activityRoute);
 
 app.get("/", (req, res) => {
   res.send("Hello, world");
