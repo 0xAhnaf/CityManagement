@@ -10,6 +10,6 @@ router.get("/list", checkToken, getAllComplaints);
 router.get("/list/:id", checkToken, getComplaintsById);
 router.put("/list/:id", checkToken, updateComplaintStatusById);
 router.delete("/list/:id", checkToken, deleteComplaintById);
-router.get("/count", getComplaintCount);
+router.get("/stats", getComplaintCount);
 
 export default router;

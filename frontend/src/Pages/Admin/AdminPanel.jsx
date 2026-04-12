@@ -49,11 +49,6 @@ export default function AdminPanel() {
               </button>
             ))}
           </nav>
-          
-          <button onClick={logout} className={`admin-nav-btn`}>
-            Log out
-          </button>
-        
 
         <div className="admin-sidebar-footer">
           <span className="admin-footer-label">Logged in as</span>
