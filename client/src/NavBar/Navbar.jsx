@@ -35,7 +35,6 @@ function Navbar() {
         <li><NavLink to="/ReportPage" onClick={() => setMenuOpen(false)}>Complaints</NavLink></li>
         <li><NavLink to="/VolunteerPage" onClick={() => setMenuOpen(false)}>Volunteer</NavLink></li>
         <li><NavLink to="/BloodDonation" onClick={() => setMenuOpen(false)}>Blood donor</NavLink></li>
-        <li><NavLink to="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</NavLink></li>
 
         {isAdmin && (
           <li>
@@ -47,7 +46,11 @@ function Navbar() {
 
         {isLoggedIn ? (
           <>
-            <li className="nav-user-name">{user.name}</li>
+            <li>
+              <NavLink to="/dashboard" className="nav-user-name" onClick={() => setMenuOpen(false)}>
+              {user.name}
+            </NavLink>
+            </li>
             <li>
               <button className="nav-btn logout" onClick={handleLogout}>Logout</button>
             </li>
