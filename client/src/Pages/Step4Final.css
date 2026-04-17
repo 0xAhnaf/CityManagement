@@ -8,6 +8,13 @@
   margin-top:15px;
 }
 
+input{
+  width:100%;
+  min-height:15px;
+  border-radius:8px;
+  padding:12px;
+}
+
 textarea{
   width:100%;
   min-height:150px;

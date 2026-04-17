@@ -76,8 +76,6 @@ const Step4Final = ({ prevStep }) => {
 
         <UrgencySelector urgency={urgency} setUrgency={setUrgency} />
 
-        <ContactForm />
-
         <div className="buttons">
           <button onClick={prevStep} className="prev">
             ← Previous step

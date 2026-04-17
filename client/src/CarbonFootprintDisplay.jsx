@@ -5,7 +5,7 @@ const CarbonFootprintDisplay = () => {
 
     return (
         <div style={{
-            position: 'fixed', bottom: 10, right: 10,
+            position: 'fixed', bottom: 10, left: 10,
             background: 'rgba(255,255,255,0.8)', padding: '10px',
             borderRadius: '5px', zIndex: 1000
         }}>
