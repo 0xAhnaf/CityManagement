@@ -37,38 +37,19 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const signup = async (name, email, password) => {
-    try {
-      setAuthLoading(true);
-      const response = await axiosInstance.post("/auth/signup", {
-        name,
-        email,
-        password,
-      });
-      toast.success(response.data.message);
-      navigate("/verify-email", { state: { email } }); // pass email for the notice page
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const resendVerification = async (email) => {
   try {
     setAuthLoading(true);
-    const response = await axiosInstance.post("/auth/resend-verification", { email });
-    toast.success(response.data.message);
+    const response = await axiosInstance.post("/auth/signup", { name, email, password });
+    const { data } = response;
+    setUser(data);
+    navigate("/");
+    toast.success("Signup successful");
   } catch (error) {
-    if (error.response?.status === 429) {
-      toast.error(error.response.data.message); // cooldown message
-    } else {
-      toast.error(error.response?.data?.message || "Something went wrong");
-    }
+    toast.error(error.response.data.message);
   } finally {
     setAuthLoading(false);
   }
 };
-
 
   const login = async (email, password) => {
     try {
@@ -106,51 +87,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const forgotPassword = async (email) => {
-    try {
-      setAuthLoading(true);
-      const response = await axiosInstance.post("/auth/forgot-password", {
-        email,
-      });
-      toast.success(response.data.message);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const resetPassword = async (token, password) => {
-    try {
-      setAuthLoading(true);
-      const response = await axiosInstance.post(
-        `/auth/reset-password/${token}`,
-        { password },
-      );
-      toast.success(response.data.message);
-      navigate("/login");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        authLoading,
-        login,
-        signup,
-        logout,
-        setUser,
-        forgotPassword,
-        resetPassword,
-        resendVerification
-      }}
-    >
+   <AuthContext.Provider value={{ user, loading, authLoading, login, signup, logout, setUser }}>
       {loading ? null : children}
     </AuthContext.Provider>
   );

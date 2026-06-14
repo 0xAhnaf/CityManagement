@@ -14,10 +14,6 @@ import { Toaster } from "react-hot-toast";
 import AdminPanel from "./Pages/Admin/AdminPanel";
 import { useAuthContext } from "./contexts/AuthContext";
 import CarbonFootprintDisplay from "./CarbonFootprintDisplay";
-import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
-import ResetPassword from "./Pages/ResetPassword/ResetPassword";
-import VerifyEmailNotice from "./Pages/VerifyEmailNotice/VerifyEmailNotice";
-import VerifyEmailConfirm from "./Pages/VerifyEmailConfirm/VerifyEmailConfirm";
 
 function AdminRoute() {
   const { user } = useAuthContext();
@@ -29,10 +25,8 @@ function AdminRoute() {
 function App() {
   const { user } = useAuthContext();
   const location = useLocation();
-  const hideNavbar =
-  ["/login", "/signup", "/forgot-password", "/verify-email"].includes(location.pathname) ||
-  location.pathname.startsWith("/reset-password/") ||
-  location.pathname.startsWith("/verify-email/");
+  const hideNavbar = ["/login", "/signup", "/admin"].includes(location.pathname);
+
 
   return (
     <main className="main-content">
@@ -42,10 +36,6 @@ function App() {
           path="/"
           element={user?.role === "admin" ? <Navigate to="/admin" /> : <Home />}
         />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/verify-email" element={<VerifyEmailNotice />} />
-        <Route path="/verify-email/:token" element={<VerifyEmailConfirm />} />
 
         <Route element={<PrivateRoute />}>
           <Route path="/ReportPage" element={<ReportPage />} />

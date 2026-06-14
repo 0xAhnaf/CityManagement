@@ -60,8 +60,7 @@ export default function Login() {
           <div className="input-group">
             <div className="password-row">
               <label>Password</label>
-              <Link to="/forgot-password" className="forgot">FORGOT PASSWORD?</Link>
-
+              <span className="forgot">FORGOT PASSWORD?</span>
             </div>
             <div className="input-box">
               <span className="icon">🔒</span>
