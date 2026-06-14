@@ -29,7 +29,7 @@ function VolunteerCard({ vcard }) {
   const checkEnrollment = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/app/volunteers/check/${vcard._id}`,
+        `https://citymanagement-backend.onrender.com/app/volunteers/check/${vcard._id}`,
         { withCredentials: true }
       );
       setEnrolled(res.data.enrolled);
@@ -47,7 +47,7 @@ function VolunteerCard({ vcard }) {
 
     try {
       await axios.post(
-        "http://localhost:8000/app/volunteers",
+        "https://citymanagement-backend.onrender.com/app/volunteers",
         { eventId: vcard._id, phone: formData.phone, age: formData.age },
         { withCredentials: true }
       );
