@@ -27,7 +27,7 @@ export default function Events() {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/events",
+      const res = await axios.get("https://citymanagement-backend.onrender.com/api/events",
         { withCredentials: true }
       );
       setEvents(res.data);
@@ -40,7 +40,7 @@ export default function Events() {
   const fetchVolunteers = async (eventId) => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/app/volunteers/${eventId}`,
+        `https://citymanagement-backend.onrender.com/app/volunteers/${eventId}`,
         { withCredentials: true }
       );
       setVolunteers((prev) => ({ ...prev, [eventId]: res.data }));
