@@ -125,7 +125,7 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
 EMAIL_USER=your_email_address
 EMAIL_PASS=app_password(Do not use your email password. For gmail account go to app passwords page of google accounts and generate a password)
-CLIENT_URL="http://localhost:8000"
+CLIENT_URL="http://localhost:5173"
 ```
 ```bash
 cp client/.env.example client/.env
