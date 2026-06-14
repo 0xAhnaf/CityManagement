@@ -11,7 +11,7 @@ export default function Login() {
   //   navigate("/");
   // };
 
-  const { login } = useAuthContext();
+  const { login, authLoading } = useAuthContext();
   const [fields, setFields] = useState({
     "email": "",
     "password": ""
@@ -60,7 +60,8 @@ export default function Login() {
           <div className="input-group">
             <div className="password-row">
               <label>Password</label>
-              <span className="forgot">FORGOT PASSWORD?</span>
+              <Link to="/forgot-password" className="forgot">FORGOT PASSWORD?</Link>
+
             </div>
             <div className="input-box">
               <span className="icon">🔒</span>
@@ -79,8 +80,8 @@ export default function Login() {
             <span>Keep me logged in for 30 days</span>
           </div> */}
 
-          <button className="login-btn" type="submit">
-            LOG IN
+          <button className="login-btn" type="submit" disabled={authLoading}>
+            {authLoading ? "LOGGING IN..." : "LOG IN"}
           </button>
 
           <p className="signup-text">
