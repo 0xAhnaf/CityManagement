@@ -10,6 +10,8 @@ const transporter = nodemailer.createTransport({
 
 export const sendVerificationEmail = async (toEmail, token) => {
   const verifyLink = `${process.env.CLIENT_URL}/verify-email/${token}`;
+  console.log("About to send email");
+  
   await transporter.sendMail({
     from: `"City Connect" <${process.env.EMAIL_USER}>`,
     to: toEmail,
@@ -21,6 +23,7 @@ export const sendVerificationEmail = async (toEmail, token) => {
       <p>If you didn't sign up, ignore this email.</p>
     `,
   });
+  console.log("Email sent successfully");
 };
 
 export const sendPasswordResetEmail = async (toEmail, token) => {
