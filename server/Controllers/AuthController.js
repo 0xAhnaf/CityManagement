@@ -31,7 +31,13 @@ export const signup = async (req, res) => {
     });
     await newUser.save();
 
-    await sendVerificationEmail(email, verifyToken);
+    try{
+      await sendVerificationEmail(email, verifyToken);
+      console.log("Email sent successfully");
+    }catch (emailError){
+      console.error("EMAIL ERROR:", emailError.message);
+      return res.status(200).json({ message: "Signup successful. Please verify your email." });
+    }
 
     // No JWT cookie yet — user must verify first
     return res.status(200).json({ message: "Signup successful. Please verify your email." });
