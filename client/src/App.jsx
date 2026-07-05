@@ -52,7 +52,6 @@ function App() {
         </Route>
       </Routes>
       <Toaster position="bottom-right" />
-      <CarbonFootprintDisplay />
     </main>
   );
 }
